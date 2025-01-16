@@ -1,0 +1,28 @@
+﻿@page
+@using Microsoft.Data.SqlClient;
+
+@{
+    try
+    {
+        String id = Request.Query["id"];
+
+        String connectionString = "Data Source=.\\SQLEXPRESS;Initial Catalog=todolist;Integrated Security=True;Encrypt=False";
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            String sql = "DELETE FROM todo WHERE id=@id ";
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@id", id);
+
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+    catch(Exception ex)
+    {
+
+    }
+    Response.Redirect("/Todo List/Index");
+}
