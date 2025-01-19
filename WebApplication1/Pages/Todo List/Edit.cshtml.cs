@@ -31,7 +31,7 @@ namespace WebApplication1.Pages.Todo_List
                                 todoInfo.id = "" + reader.GetInt32(0);
                                 todoInfo.task = reader.GetString(1);
                                 todoInfo.description = reader.GetString(2);
-                                todoInfo.endtime = reader.GetString(3);
+                                todoInfo.endtime = reader.IsDBNull(3)? TimeSpan.Zero : reader.GetTimeSpan(3);
                             }
                         }
                     }
@@ -47,9 +47,15 @@ namespace WebApplication1.Pages.Todo_List
             todoInfo.id = Request.Form["id"];
             todoInfo.task = Request.Form["task"];
             todoInfo.description = Request.Form["description"];
-            todoInfo.endtime = Request.Form["endtime"];
 
-            if (todoInfo.task.Length == 0 || todoInfo.description.Length == 0 || todoInfo.endtime.Length == 0)
+            if (!TimeSpan.TryParse(Request.Form["endtime"], out var parsedEndTime))
+            {
+                errorMessage = "Invalid end time format. Please enter a valid time.";
+                return;
+            }
+            todoInfo.endtime = parsedEndTime;
+
+            if (todoInfo.task.Length == 0 || todoInfo.description.Length == 0 || todoInfo.endtime == TimeSpan.Zero)
             {
                 errorMessage = "All the fields are required.";
                 return;

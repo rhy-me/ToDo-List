@@ -9,20 +9,30 @@
 <table class="table">
     <thead>
         <tr>
-            <th>ID</th>
             <th>Task Name</th>
             <th>Description</th>
             <th>End Time</th>
+            <th>Remaining Time</th>
         </tr>
     </thead>
     <tbody>
         @foreach(var item in Model.listtodo)
         {
             <tr>
-                <td>@item.id</td>
                 <td>@item.task</td>
                 <td>@item.description</td>
                 <td>@item.endtime</td>
+                <td>
+                    @if(item.remainingTime > TimeSpan.Zero)
+                    {
+                        <span>@item.remainingTime.Hours:</span><span>@item.remainingTime.Minutes</span>
+                    }
+                    else
+                    {
+                        <span>Time's up</span>
+                    }
+                </td>
+  
                 <td>
                     <a class="btn btn-primary btn-sm" href = "/Todo List/Edit?id=@item.id">Edit</a>
                     <a class="btn btn-danger btn-sm" href="/Todo List/Delete?id=@item.id">Delete</a>

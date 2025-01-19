@@ -17,9 +17,14 @@ namespace WebApplication1.Pages.Todo_List
         {
             todoInfo.task = Request.Form["task"];
             todoInfo.description = Request.Form["description"];
-            todoInfo.endtime = Request.Form["endtime"];
 
-            if (todoInfo.task.Length == 0 || todoInfo.description.Length == 0 || todoInfo.endtime.Length == 0)
+            if (!TimeSpan.TryParse(Request.Form["endtime"], out var parsedEndTime))
+            {
+                errorMessage = "Invalid end time format. Please enter a valid time.";
+            }
+            todoInfo.endtime = parsedEndTime;
+
+            if (todoInfo.task.Length == 0 || todoInfo.description.Length == 0 || todoInfo.endtime == TimeSpan.Zero)
             {
                 errorMessage = "All the fields are required.";
                 return;
@@ -50,7 +55,7 @@ namespace WebApplication1.Pages.Todo_List
                 errorMessage = ex.Message;
                 return;
             }
-            todoInfo.task = ""; todoInfo.description = ""; todoInfo.endtime = "";
+            todoInfo.task = ""; todoInfo.description = ""; todoInfo.endtime = TimeSpan.Zero;
             successMessage = "New task added correctly";
 
             Response.Redirect("/Todo List/Index");

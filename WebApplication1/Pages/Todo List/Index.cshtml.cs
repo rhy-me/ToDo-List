@@ -28,7 +28,14 @@ namespace WebApplication1.Pages.Todo_List
                                 todoInfo.id = "" + reader.GetInt32(0);
                                 todoInfo.task = reader.GetString(1);
                                 todoInfo.description = reader.GetString(2);
-                                todoInfo.endtime = reader.GetString(3);
+                                if (!reader.IsDBNull(3))
+                                {
+                                    todoInfo.endtime = reader.GetTimeSpan(3);
+                                }
+
+
+                                DateTime endDateTime = DateTime.Today.Add(todoInfo.endtime);
+                                todoInfo.remainingTime = endDateTime > DateTime.Now ? endDateTime - DateTime.Now : TimeSpan.Zero; 
 
                                 listtodo.Add(todoInfo);
                             } 
@@ -48,6 +55,7 @@ namespace WebApplication1.Pages.Todo_List
         public string id;
         public string task;
         public string description;
-        public string endtime;
+        public TimeSpan endtime;
+        public TimeSpan remainingTime;
     }
 }
